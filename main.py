@@ -1,59 +1,41 @@
-import random
 from grid import LifeGrid
-from view import CursesView 
-
-def randGrid(box, nb: int = 100):
-    start_col, start_row, end_col, end_row = box
-    data = set()
-    for _ in range(nb):
-        data.add((random.randrange(start_row, end_row), random.randrange(start_col, end_col)))
-    print(data)
-    return data
+from view import CursesView
+from utils import rand_grid, gen_blinker, gen_vaissel, gen_beacon, gen_toad
 
 
 # DATA
 
-# x,y
+# big screen
+# box = (0, 0, 100, 60)
+# seedbox = (35, 15, 65, 45)
 
-# Blinker
-#active_cells = {(2, 1), (2, 2), (2, 3), (3, 2)}
+# smaller screen
+box = (0, 0, 90, 50)
+seedbox = (15, 15, 75, 35)
 
-# Toad
-#active_cells = {(2, 2), (2, 3), (2, 4), (3, 1), (3, 2), (3, 3)}
+# Specific data
+# active_cells = rand_grid(seedbox, 300)
 
-# Beacon
-#active_cells = {(1, 1), (1, 2), (2, 1), (4, 3), (4, 4), (3, 4)}
+# active_cells = set()
 
-# Truc
-#active_cells = {(12, 11), (12, 12), (12, 13), (13, 12)}
+# active_cells = gen_blinker(25, 45)
 
-# 3 trucs
-# active_cells = {
-#     (12, 11), (12, 12), (12, 13), (13, 12),
-#     (17, 16), (17, 17), (17, 18), (18, 17),
-#     (22, 21), (22, 22), (22, 23), (23, 22),
-# }
+# active_cells = active_cells.union(gen_vaissel(25, 45))
+# active_cells = active_cells.union(gen_vaissel(20, 45))
+# active_cells = active_cells.union(gen_vaissel(25, 50))
+# active_cells = active_cells.union(gen_vaissel(20, 50))
 
+# active_cells = active_cells.union(gen_beacon(25, 45))
 
-# mover
-#active_cells = {(2, 1), (2, 2), (2, 3), (1, 3), (0, 2)}
+# active_cells = active_cells.union(gen_toad(25, 45))
 
-# DATA
-
-rows = 100
-cols = 60
-box = (0, 0, rows, cols)
-
-seedbox = (35, 15, 65, 45)
-active_cells = randGrid(seedbox, 160)
+# Rand data
+active_cells = rand_grid(seedbox, 300)
 
 
 # RUN
 
 grid = LifeGrid(active_cells, box)
 
-view = CursesView(grid, 1000, 6)
+view = CursesView(grid, 500, 6)
 view.show()
-
-
-

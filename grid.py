@@ -1,14 +1,14 @@
 """
 
-Grid: 
+Grid:
 
     - infinite grid
     - we only handle active cells
 
 Cell:
 
-    - cell are represented has `tuple[int, int] (row, col)
-    
+    - cell are represented has `tuple[int, int] (row, col) ou col row ?
+
 Règle:
 
     L'état suivant d'une cellule est actif si elle a 3 voisins actifs ou elle est active et a 2 voisins actifs
@@ -21,12 +21,14 @@ ALIVE = "◼"
 DEAD = "."
 
 # Above left, Above, Above right, Left, Right, Below left, Below, Below right
-NEIGHBORS = ((-1, -1), (-1, 0),(-1, 1),(0, -1),(0, 1),(1, -1),(1, 0),(1, 1))
+NEIGHBORS = ((-1, -1), (-1, 0), (-1, 1), (0, -1),
+             (0, 1), (1, -1), (1, 0), (1, 1))
 
 
 class LifeGrid:
 
-    def __init__(self, active_cells: set[tuple[int, int]], bbox=(0, 0, 30, 30)):
+    def __init__(
+            self, active_cells: set[tuple[int, int]], bbox=(0, 0, 30, 30)):
         self.active_cells = active_cells
         self.bbox = bbox
 
@@ -43,6 +45,25 @@ class LifeGrid:
         } - self.active_cells
 
         self.active_cells = stay_alive | come_alive
+
+    def evolve_explicit(self):
+        # 1. On compte le nombre de voisins pour chaque cellule
+        num_neighbors = self.count_neighbors()
+
+        # 2. On initialise le futur prochain set
+        cells = set()
+
+        # 3. On parcourt chaque cellule et son nombre de voisins
+        for cell, num in num_neighbors.items():
+            # Si la cellule a 2 ou 3 voisins ET qu'elle est déjà active, elle reste en vie
+            # ou Si la cellule a exactement 3 voisins ET qu'elle n'est pas
+            # active, elle naît
+            if (num in [2, 3] and cell in self.active_cells) or (
+                    num == 3 and cell not in self.active_cells):
+                cells.add(cell)
+
+        # 4. On set la nouvelle géération de cellules
+        self.active_cells = cells
 
     # eval number of neighbors far all active cells
     # return a collections indexed by tuple (row, col)

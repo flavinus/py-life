@@ -1,31 +1,25 @@
 # Flavinus Py Life
 
----
-# Structure
+* https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+* https://realpython.com/conway-game-of-life-python/
 
-helloworld/
-│
-├── helloworld/
-│   ├── __init__.py
-│   ├── helloworld.py
-│   └── helpers.py
-│
-├── tests/
-│   ├── helloworld_tests.py
-│   └── helpers_tests.py
-│
-├── .gitignore
-├── LICENSE
-├── README.md
-├── 
-└── setup.py
+## Setup
 
+Systrem requirments: linux, python3, python3-pip
 
----
-# Resources
+See `script/dev_setup.sh` for first setup
 
-https://realpython.com/python-application-layouts/
+## Run
 
-https://realpython.com/conway-game-of-life-python/
+Be sure venv is enabled: `source .venv/bin/activate`
 
+Then run: `python3 main.py`
+
+## Tools
+
+Linter:
+    `pylint *.py`
+
+Linter auto-corrections:
+    `autopep8 --in-place --aggressive --aggressive *.py`
 
