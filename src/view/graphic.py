@@ -2,62 +2,66 @@ import pygame
 from grid import LifeGrid
 from view.abstract import ViewInterface
 
-BLACK = (0, 0, 0)
-WHITE = (200, 200, 200)
-
-WINDOW_WIDTH = 1600
-WINDOW_HEIGHT = 1000
-CELL_SIZE = 8
+BG_COLOR = (0, 0, 0)
+CELL_COLOR = (200, 200, 200)
+CELL_SIZE = 5
 
 class GraphicView(ViewInterface):
 
-    def __init__(self, frame_rate: int = 15):
-        self.grid = None
-        self.running = False
-        self.frame_rate = frame_rate
-
+    def __init__(self, frame_rate: int = 10):
         pygame.init()
         pygame.display.set_caption('Game of life')
         pygame.display.set_icon(pygame.image.load("assets/flavinus_400.png"))
-        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
+        self.frame_rate = frame_rate
+        self.grid = None
+        self.paused = False
+        self.running = False
 
 
     def start(self, grid: LifeGrid):
         self.grid = grid
         self.running = True
+        self.paused = False
 
-        while True:
+        while self.running:
             #print(f"[ Game of life ] Iteration={self.grid.iteration} Cells={len(self.grid.cells)}")
             self.draw()
+            self.handle_events()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    break
-
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_SPACE]:
-                self.running = not self.running
-            elif keys[pygame.K_ESCAPE]:
-                break
-
-            if self.running and self.grid.evolve() == 0:
+            if not self.paused and self.grid.evolve() == 0:
                 print("ERROR: No more alive cells !!! 😵")
-                break
+                self.running = False
 
             self.clock.tick(self.frame_rate)
 
         pygame.quit()
-        #sys.exit()
+
+    def handle_events(self):
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                break
+    
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            self.paused = not self.paused
+        if keys[pygame.K_UP]:
+            self.frame_rate = min([20, self.frame_rate + 1])
+        if keys[pygame.K_DOWN]:
+            self.frame_rate = max([1, self.frame_rate - 1])
+        elif keys[pygame.K_ESCAPE]:
+            self.running = False
 
 
     def draw(self):
-        self.screen.fill(BLACK)
-        for y in range(0, WINDOW_WIDTH):
-            for x in range(0, WINDOW_HEIGHT):
-                if (x, y) in self.grid.cells:
-                    pygame.draw.rect(self.screen, WHITE, pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+        self.screen.fill(BG_COLOR)
+        for cell in self.grid.cells:
+            pygame.draw.rect(self.screen, CELL_COLOR, pygame.Rect(cell[0] * CELL_SIZE, cell[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE))
         pygame.display.update()
 
+
     def get_bounds(self):
-        return (0, 0, round(WINDOW_WIDTH / CELL_SIZE), round(WINDOW_HEIGHT / CELL_SIZE))
+        return (0, 0, round(self.screen.get_width() / CELL_SIZE), round(self.screen.get_height() / CELL_SIZE))

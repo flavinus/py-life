@@ -19,16 +19,8 @@ Then run: `python3 src/main.py`
 
 Edit main.py to handle seed and view mode (ncurses or pygame)
 
-## Tools
 
-Linter:
-    `pylint src/*.py`
-
-Linter auto-corrections:
-    `autopep8 --in-place --aggressive --aggressive src/*.py`
-
----
-# Seed samples
+## Seed samples
 
 See patterns and utils files.
 
@@ -49,3 +41,12 @@ cells = set()
 cells = cells.union(get_pattern("beacon", 25, 45))
 cells = cells.union(get_pattern("toad", 25, 45))
 ```
+
+---
+# Tools
+
+Linter:
+    `pylint src/*.py`
+
+Linter auto-corrections:
+    `autopep8 --in-place --aggressive --aggressive src/*.py`
